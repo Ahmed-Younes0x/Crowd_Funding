@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -5,49 +6,75 @@ function Register() {
   const navigate = useNavigate();
   const [fields, setFields] = useState(["", "", "", "", ""]);
   const [valid, setValid] = useState([false, false, false, false, false]);
-  const [fieldstate,setfieldstate]=useState(["", "", "", "", ""])
+  const [fieldstate, setfieldstate] = useState(["", "", "", "", ""]);
   function keypressed(id, char) {
     let newfields = fields;
     newfields[id] = char;
     setFields(newfields);
     validate(id);
   }
-
+  let handelsubmit = async () => {
+    try {
+      let response = await axios.post(
+        "http://localhost:8000/register",
+        {
+          name: fields[0],
+          email: fields[1],
+          password: fields[3],
+          username: fields[2],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      alert("success");
+    } catch (error) { 
+      if (`${error}`.includes('406')){alert(`email already used`)}
+      else {alert(`error ${error}`);
+}
+    }
+  };
 
   function validate(id) {
     let newvalid = valid;
-    let newfieldstate=fieldstate
-    console.log('verify',id);
+    let newfieldstate = fieldstate;
+    console.log("verify", id);
     switch (id) {
-      case 0:        
+      case 0:
         newvalid[id] = fields[id] !== "";
-        newfieldstate[id]= newvalid[id] ? "" : " bg-danger opacity-50 ";
+        newfieldstate[id] = newvalid[id] ? "" : " bg-danger opacity-50 ";
         break;
       case 1:
         newvalid[id] = fields[id].match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          )? true : false;
-        newfieldstate[id]= newvalid[id] ? "" : " bg-danger opacity-50 ";
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        )
+          ? true
+          : false;
+        newfieldstate[id] = newvalid[id] ? "" : " bg-danger opacity-50 ";
         break;
       case 2:
-        console.log('user');
-        newvalid[id] = fields[id].match( /^\S+$/)? true: false;
-        newfieldstate[id]= newvalid[id] ? "" : " bg-danger opacity-50 ";
+        console.log("user");
+        newvalid[id] = fields[id].match(/^\S+$/) ? true : false;
+        newfieldstate[id] = newvalid[id] ? "" : " bg-danger opacity-50 ";
         console.log(newvalid[id]);
         break;
 
       case 3:
-        console.log('pass');
-          newvalid[id] = fields[id].match( /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@%$#*])[A-Za-z\d@%$#*]{8,}$/)? true: false;
-                  newfieldstate[id]= newvalid[id] ? "" : " bg-danger opacity-50 ";
+        console.log("pass");
+        newvalid[id] = fields[id].match(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@%$#*])[A-Za-z\d@%$#*]{8,}$/
+        )
+          ? true
+          : false;
+        newfieldstate[id] = newvalid[id] ? "" : " bg-danger opacity-50 ";
         console.log(newvalid[id]);
         break;
 
       case 4:
-        
-        
-        newvalid[id] = fields[id] == fields[id-1];
-        newfieldstate[id]= newvalid[id] ? "" : " bg-danger opacity-50 ";
+        newvalid[id] = fields[id] == fields[id - 1];
+        newfieldstate[id] = newvalid[id] ? "" : " bg-danger opacity-50 ";
         console.log(newvalid[id]);
         break;
 
@@ -55,7 +82,7 @@ function Register() {
         break;
     }
     setValid(newvalid);
-    setfieldstate(newfieldstate)
+    setfieldstate(newfieldstate);
   }
   function sendinfo() {
     if (valid.some((e) => e == false)) navigate("/");
@@ -145,21 +172,7 @@ function Register() {
           />
         </div>
 
-        <button
-          className="btn btn-success"
-          onClick={() => {
-            if (valid.some((e) => e == false)) {
-              alert(`error ${valid}`);
-              return;
-            }
-            alert(`
-                name      : ${fields[0]} \n
-                Email     : ${fields[1]} \n
-                User Name : ${fields[2]} \n
-                password  : ${fields[3]} \n
-                `)
-          }}
-        >
+        <button className="btn btn-success" onClick={handelsubmit}>
           Register
         </button>
       </div>

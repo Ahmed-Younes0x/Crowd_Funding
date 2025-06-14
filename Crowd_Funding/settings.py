@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     #
     'rest_framework',
     'rest_framework_simplejwt',
+    'corsheaders',
+
     #
     'Login'
 ]
@@ -73,6 +75,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'Crowd_Funding.urls'
@@ -94,6 +98,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Crowd_Funding.wsgi.application'
 
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases

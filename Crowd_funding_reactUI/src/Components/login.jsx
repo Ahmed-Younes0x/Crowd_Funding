@@ -1,19 +1,37 @@
+import { useState } from "react";
 import React from "react";
+import axios from "axios";
 
 export default function Login() {
+  const [logindata,Setlogindata]=useState({'email':'','password':''});
+  let handelsubmit= async () => {
+      const response = await axios.post('http://localhost:8000/api/gettoken',
+         logindata,
+              {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+        
+      });
+      console.log(response.data['access']);
+      localStorage.setItem('token', response.data['access']);
+      
+    
+    }
   return (
       <div className="container-fluid">
         <div className="row justify-content-center">
           <div className="col-md-5 col-lg-4">
             <div className="card shadow-lg border-0 rounded-3">
               <div className="card-body p-4 p-lg-5">            
-                <form>
+                <form onSubmit={handelsubmit}>
                   <div className="mb-3">
                     <label className="form-label fw-bold text-uppercase small">Email</label>
                     <input
                       type="email"
                       className="form-control shadow-sm"
                       placeholder="Email"
+                      onChange={(e)=>Setlogindata({'email':e.target.value,'password':logindata['password']})}
                     />
                   </div>
 
@@ -23,7 +41,7 @@ export default function Login() {
                       type="password"
                       className="form-control shadow-sm"
                       placeholder="Password"
-                    />
+                      onChange={(e)=>Setlogindata({'password':e.target.value,'email':logindata['email']})}                    />
                   </div>
                   
                   <div className="mb-3 form-check">
@@ -40,6 +58,7 @@ export default function Login() {
                   <button
                     className="btn btn-dark w-100 py-3 fw-bold text-uppercase"
                     type="button"
+                    onClick={handelsubmit}
                   >
                     Sign In
                   </button>
@@ -49,7 +68,7 @@ export default function Login() {
                   <a href="#forgot" className="text-decoration-none small text-muted">
                     Forgot password?
                   </a>
-                  <a href="#register" className="text-decoration-none small text-muted">
+                  <a href="/register" className="text-decoration-none small text-muted">
                     Create new account
                   </a>
                 </div>
