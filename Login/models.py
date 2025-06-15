@@ -20,7 +20,7 @@ class CustomerUserManager(BaseUserManager):
         token=send_verification_email(email)
         return self._create_user(email, phone if phone else '101', password,token,  **extra_fields)
     def create_superuser(self, email, password=None,phone=None , **extra_fields):
-        extra_fields.setdefault('is_staff',False)
+        extra_fields.setdefault('is_staff',True)
         extra_fields.setdefault('is_superuser',True)
         extra_fields.setdefault('is_active',True)
         return self._create_user(email, phone=phone if phone else '100', password=password,token=None,  **extra_fields)
