@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from Login.models import Custom_User
-from .models import Project
-from .serializers import ProjectSerializer
+from .models import Project, ProjectImage
+from .serializers import ProjectImageSerializer, ProjectSerializer
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
@@ -24,6 +24,13 @@ def get_projects(request):
 def get_project(request,code):
     project = Project.objects.get(id=code)
     serializer = ProjectSerializer(project) 
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_project_images(request,projectID):
+    project = Project.objects.get(id=projectID)
+    images=ProjectImage.objects.filter(project=project)
+    serializer = ProjectImageSerializer(images, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])

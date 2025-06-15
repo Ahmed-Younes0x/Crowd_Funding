@@ -76,7 +76,6 @@ function App() {
                 profile
               </a>
             </li></ul>
-
           </div>
         </div>
       </nav>

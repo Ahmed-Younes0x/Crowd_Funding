@@ -11,6 +11,7 @@ import CreateProject from "./Pages/CreateProject.jsx";
 import { AuthProvider } from './context/context.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import Verfiy from "./Components/verfiy.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")).render(
         <div className="container mt-4">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/verify" element={<Verfiy />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
