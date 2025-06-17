@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from Login.models import Custom_User
-from .models import Project, ProjectImage
-from .serializers import ProjectImageSerializer, ProjectSerializer
+from .models import Donation, Project, ProjectImage
+from .serializers import DonationSerializer, ProjectImageSerializer, ProjectSerializer
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
@@ -139,3 +139,19 @@ def search_projects_by_date(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+def get_donations(request):
+    print(request.data)
+    user=Custom_User.objects.get(email=request.data['email'])
+    donations = Donation.objects.filter(donor=user)
+    serializer = DonationSerializer(donations,many=True) 
+    return Response(serializer.data)
+@api_view(['POST'])
+def create_donation(request):
+    print(request.data)
+    user=Custom_User.objects.get(email=request.data['email'])
+    project=Project.objects.get(id=request.data['id'])
+    donation=Donation(donor=user,amount=request.data['amount'],project=project)
+    donation.save()
+    return Response(status=200)

@@ -14,6 +14,7 @@ export default function Login() {
         
       });
       console.log(response.data['access']);
+      localStorage.setItem('email',logindata['email'])
       localStorage.setItem('token', response.data['access']);
       
     

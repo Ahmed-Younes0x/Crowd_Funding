@@ -30,7 +30,7 @@ def test():
 
 @api_view(["POST"])
 def register(request):
-    if Custom_User.objects.get(email=request.data['email']):
+    if Custom_User.objects.filter(email=request.data['email']):
             return Response(data='email already exist',status=406)
     Custom_User.objects.create_user(email=request.data['email'],password=request.data['password'],username=request.data['username'])
     return Response(data=request.data['email'],status=201)
@@ -39,6 +39,13 @@ def register(request):
 @api_view(['GET'])
 def getuser(request,code):
     loguser = Custom_User.objects.get(id=code)
+    serializer = CustomUserSerializer(loguser)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def getuser_by_email(request):
+    print(request.POST)
+    loguser = Custom_User.objects.get(email=request.data['email'])
     serializer = CustomUserSerializer(loguser)
     return Response(serializer.data)
 

@@ -4,9 +4,9 @@ import { useNavigate } from "react-router";
 
 function Register() {
   const navigate = useNavigate();
-  const [fields, setFields] = useState(["", "", "", "", ""]);
-  const [valid, setValid] = useState([false, false, false, false, false]);
-  const [fieldstate, setfieldstate] = useState(["", "", "", "", ""]);
+  const [fields, setFields] = useState(["", "", "", "", "",""]);
+  const [valid, setValid] = useState([false, false, false, false, false,false]);
+  const [fieldstate, setfieldstate] = useState(["", "", "", "", "",""]);
   function keypressed(id, char) {
     let newfields = fields;
     newfields[id] = char;
@@ -14,6 +14,9 @@ function Register() {
     validate(id);
   }
   let handelsubmit = async () => {
+    if (valid.some(v => v==false)) {alert('error please revise the form');
+      return}
+
     try {
       let response = await axios.post(
         "http://localhost:8000/register",
@@ -77,6 +80,11 @@ function Register() {
         newfieldstate[id] = newvalid[id] ? "" : " bg-danger opacity-50 ";
         console.log(newvalid[id]);
         break;
+      case 5:
+        newvalid[id] = fields[id].match(
+          /^01[1,2,0,5][0-9]{8}$/);
+        newfieldstate[id] = newvalid[id] ? "" : " bg-danger opacity-50 ";
+        break;
 
       default:
         break;
@@ -138,6 +146,22 @@ function Register() {
             aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-default"
             onChange={(e) => keypressed(2, e.target.value)}
+          />
+        </div>
+        <div>
+          {" "}
+          <span
+            className={"input-group-text" + fieldstate[2]}
+            id="inputGroup-sizing-default"
+          >
+            Phone number
+          </span>
+          <input
+            type="number"
+            className="form-control"
+            aria-label="Sizing example input"
+            aria-describedby="inputGroup-sizing-default"
+            onChange={(e) => keypressed(5, e.target.value)}
           />
         </div>
 

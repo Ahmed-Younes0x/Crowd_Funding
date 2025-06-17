@@ -127,9 +127,36 @@ class Donation(models.Model):
     def __str__(self):
         return f"{self.donor.get_full_name()} - {self.amount} egp"
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # Update project current amount
-        self.project.current_amount = self.project.donations.aggregate(
-            total=models.Sum('amount'))['total'] or 0
-        self.project.save()
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     self.project.current_amount = self.project.donations.aggregate(
+    #         total=models.Sum('amount'))['total'] or 0
+    #     self.project.save()
+
+    @classmethod
+    def create(cls, amount, user, project):
+        if not amount or amount <= 0:
+            raise ValueError("Donation amount must be positive")
+        if not user:
+            raise ValueError("Donor user is required")
+        if not project:
+            raise ValueError("Target project is required")
+            
+        donation = cls(
+            amount=amount,
+            donor=user,
+            project=project
+        )
+        donation.save()
+        return donation
+
+    @classmethod
+    def get(cls, user=None, project=None):
+        if user and project:
+            return cls.objects.filter(donor=user, project=project)
+        elif user:
+            return cls.objects.filter(donor=user)
+        elif project:
+            return cls.objects.filter(project=project)
+        else:
+            raise ValueError("Either user or project must be provided")
