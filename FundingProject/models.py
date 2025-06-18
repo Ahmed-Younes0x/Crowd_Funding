@@ -4,31 +4,7 @@ from datetime import datetime
 
 from django.urls import reverse
 from Login.models import Custom_User
-# Create your models here.
 
-
-# class Project(models.Model):
-#     id = models.BigAutoField(primary_key=True)
-#     title = models.CharField(max_length=255)
-#     details = models.TextField()
-#     total_target = models.DecimalField(max_digits=10, decimal_places=2) 
-#     start_time = models.DateTimeField()
-#     end_time = models.DateTimeField()
-#     owner = models.ForeignKey(Custom_User, on_delete=models.CASCADE,null=True)
-#     images=models.ImageField()
-
-#     def CheckDate(self):
-#         if self.start_time >= self.end_time:
-#             raise ValidationError("End time must be after start time.")
-
-#     def save(self, *args, **kwargs):
-#         self.CheckDate()
-#         super().save(*args, **kwargs)
-
-#     def __str__(self):
-#         return f"{self.title}"
-    
-    
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True, verbose_name='اسم الفئة')
     description = models.TextField(blank=True, null=True, verbose_name='الوصف')

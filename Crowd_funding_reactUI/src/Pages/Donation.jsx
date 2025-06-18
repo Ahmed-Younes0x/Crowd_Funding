@@ -8,7 +8,6 @@ export default function DonationPage() {
   const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
-    // Fetch project list
     axios
       .get(`http://localhost:8000/api/projects/`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },

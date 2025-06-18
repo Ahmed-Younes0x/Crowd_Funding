@@ -65,17 +65,23 @@ function App() {
                   </li>
                 </ul>
               </li> */}
-                          <li className="nav-item d-flex">
-              <a className="nav-link" href="/login">
-                login/Register
-              </a>
-            </li>
-            
-            <li className="nav-item">
-              <a className="nav-link" href="/profile">
-                profile
-              </a>
-            </li></ul>
+              <li className="nav-item d-flex">
+                <a className="nav-link" href="/login">
+                  login/Register
+                </a>
+              </li>
+
+              <li className="nav-item">
+                <a className="nav-link" href="/profile">
+                  profile
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/donate">
+                  Donate
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </nav>

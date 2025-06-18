@@ -104,14 +104,17 @@ def update_project(request, code):
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     
 @api_view(['POST'])
-def delete_project(request, code):
-    userId = request.data.get("UserID")
-    userdd = Custom_User.objects.get(id=userId)
+def delete_project(request):
+    email = request.data.get("email")
+    projectID=request.data.get("projectId")
+    userdd = Custom_User.objects.get(email=email)
     try:
-        project = Project.objects.get(id=code)
+        project = Project.objects.get(id=projectID)
 
-        if project.owner != userdd:
+        if project.owner != userdd or int(project.current_amount)/int(project.total_target)>0.25:
             return Response({"error": "You can only delete your own projects."}, status=status.HTTP_403_FORBIDDEN)
+        if project.current_amount/project.total_target>0.25:
+            return Response({"error": "You can only delete projects with less than 25% progress."}, status=status.HTTP_403_FORBIDDEN)
 
         project.delete()
         return Response({"message": "Project deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
@@ -152,6 +155,10 @@ def create_donation(request):
     print(request.data)
     user=Custom_User.objects.get(email=request.data['email'])
     project=Project.objects.get(id=request.data['id'])
-    donation=Donation(donor=user,amount=request.data['amount'],project=project)
+    amount=request.data['amount']
+    donation=Donation(donor=user,amount=amount,project=project)
+    project.current_amount=int(amount)+project.current_amount
+    project.save()
     donation.save()
+
     return Response(status=200)

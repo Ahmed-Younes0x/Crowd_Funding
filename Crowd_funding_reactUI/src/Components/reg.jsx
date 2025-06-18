@@ -25,6 +25,7 @@ function Register() {
           email: fields[1],
           password: fields[3],
           username: fields[2],
+          phone: fields[5]
         },
         {
           headers: {
@@ -157,7 +158,7 @@ function Register() {
             Phone number
           </span>
           <input
-            type="number"
+            type="text"
             className="form-control"
             aria-label="Sizing example input"
             aria-describedby="inputGroup-sizing-default"

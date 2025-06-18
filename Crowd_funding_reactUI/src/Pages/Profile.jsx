@@ -44,15 +44,30 @@ const Profile = () => {
         console.log(res.data);
       });
   }, []);
-
+  const handleDeleteProject = async (project_id) => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete your project?"
+    );
+    if (confirm) {
+      await axios.post(
+        "http://localhost:8000/api/project/delete",
+        { 'projectId':project_id, 'email':localStorage.getItem('email') },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+  };
   const handleDelete = async () => {
     const confirm = window.confirm(
       "Are you sure you want to delete your account?"
     );
     if (confirm) {
       await axios.post(
-        "/api/user/delete",
-        { password },
+        "http://localhost:8000/api/user/delete",
+        { 'password':password, 'email':localStorage.getItem('email') },
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -136,6 +151,7 @@ const Profile = () => {
             <th>Title</th>
             <th>current Amount</th>
             <th>Total target</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody className=" w-75">
@@ -144,6 +160,7 @@ const Profile = () => {
               <td>{p.title}</td>
               <td>{p.current_amount}</td>
               <td>{p.total_target}</td>
+              <td><button className="btn btn-danger mx-auto" onClick={() => handleDeleteProject(p.id)}>Delete</button></td>
             </tr>
           ))}
         </tbody>
@@ -169,7 +186,7 @@ const Profile = () => {
         </tbody>
       </table>
 
-      {/* <div className="card p-3">
+      <div className="card p-3 w-50">
         <h4>Delete Account</h4>
         <input
           type="password"
@@ -180,7 +197,7 @@ const Profile = () => {
         <button className="btn btn-danger" onClick={handleDelete}>
           Delete Account
         </button>
-      </div> */}
+      </div>
     </div>
   );
 };
