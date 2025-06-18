@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Donation, Project, ProjectImage
+from .models import Donation, Project, ProjectImage,Comment
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,6 +11,11 @@ class ProjectImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectImage
         fields = ['id', 'image', 'display_order']
+        
+class ProjectCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id', 'user', 'content']
         
 class DonationSerializer(serializers.ModelSerializer):
     class Meta:

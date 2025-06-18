@@ -34,7 +34,6 @@ export default function DonationPage() {
       }
     } catch (error) {
       console.error("Donation failed:", error);
-      // Optional: show error message
     }
   };
 
@@ -76,8 +75,6 @@ export default function DonationPage() {
           Donate
         </button>
       </form>
-
-      {/* Success Popup */}
       {showSuccess && (
         <div
           className="alert alert-success mt-4 d-flex align-items-center"

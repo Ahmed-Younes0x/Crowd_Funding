@@ -1,20 +1,14 @@
 from django.db import models
-from django.core.exceptions import ValidationError
-from datetime import datetime
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 from django.urls import reverse
 from Login.models import Custom_User
 
 class Category(models.Model):
-    name = models.CharField(max_length=100, unique=True, verbose_name='اسم الفئة')
-    description = models.TextField(blank=True, null=True, verbose_name='الوصف')
-    icon = models.CharField(max_length=50, default='Folder', verbose_name='الأيقونة')
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name='تاريخ الإنشاء')
-
-    class Meta:
-        verbose_name = 'فئة'
-        verbose_name_plural = 'الفئات'
-        ordering = ['name']
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True, null=True)
+    icon = models.CharField(max_length=50, default='Folder')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -38,7 +32,7 @@ class Project(models.Model):
     is_featured = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return self.title
 
@@ -58,20 +52,20 @@ class Project(models.Model):
             return (self.end_date - date.today()).days
         return 0
 
-    @property
-    def average_rating(self):
-        ratings = self.ratings.all()
-        if ratings:
-            return sum(r.rating for r in ratings) / len(ratings)
-        return 0
+    # @property
+    # def average_rating(self):
+    #     ratings = self.ratings.all()
+    #     if ratings:
+    #         return sum(r.rating for r in ratings) / len(ratings)
+    #     return 0
 
-    @property
-    def total_ratings_count(self):
-        return self.ratings.count()
+    # @property
+    # def total_ratings_count(self):
+    #     return self.ratings.count()
 
-    @property
-    def total_donations_count(self):
-        return self.donations.count()
+    # @property
+    # def total_donations_count(self):
+    #     return self.donations.count()
 
 class ProjectImage(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -136,3 +130,46 @@ class Donation(models.Model):
             return cls.objects.filter(project=project)
         else:
             raise ValueError("Either user or project must be provided")
+
+
+class Comment(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
+    content = models.TextField()
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True,)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"comnt {self.user.get_full_name()} on {self.project.title}"
+
+class Rating(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
+    rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.get_full_name()} - {self.rating} star"
+
+class Report(models.Model):
+    TARGET_CHOICES = [
+        ('project', 'project'),
+        ('comment', 'comment'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('pending', 'pending'),
+        ('reviewed', 'reviewed'),
+        ('resolved', 'resolved'),
+    ]
+
+    reporter = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
+    target_id = models.PositiveIntegerField()
+    target_type = models.CharField(max_length=20, choices=TARGET_CHOICES)
+    reason = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"from {self.reporter.get_full_name()}"

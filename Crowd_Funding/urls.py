@@ -18,7 +18,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.contrib import admin
 from django.urls import path,include
 
-from FundingProject.views import create_donation, get_donations, get_project_images, get_projects, list_user_projects, create_project, get_project, update_project, delete_project, search_projects_by_date
+from FundingProject.views import create_donation, get_donations, get_project_comments, get_project_images, get_projects, list_user_projects, create_project, get_project, update_project, delete_project, search_projects_by_date
 from Login.views import delete_user, getuser, getuser_by_email
 
 
@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/projects/user/', list_user_projects, name='list_user_projects'),
     path('api/projects/create/', create_project, name='create_project'),
     path('api/projects/<int:code>/', get_project, name='get_project'),
+    path('api/projects/<int:id>/comments', get_project_comments, name='get_project_comments'),
     path('api/projects/update/<int:code>/', update_project, name='edit_project'),
     path('api/projects/delete/', delete_project, name='delete_project'),
     path('api/projects/search/', search_projects_by_date, name='search_projects_by_date'),

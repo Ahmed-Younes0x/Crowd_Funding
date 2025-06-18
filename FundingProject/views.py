@@ -4,8 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from Login.models import Custom_User
-from .models import Donation, Project, ProjectImage
-from .serializers import DonationSerializer, ProjectImageSerializer, ProjectSerializer
+from .models import Donation, Project, ProjectImage,Comment,Rating
+from .serializers import DonationSerializer, ProjectCommentSerializer, ProjectImageSerializer, ProjectSerializer
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
@@ -23,7 +23,23 @@ def get_projects(request):
 @api_view(['GET'])
 def get_project(request,code):
     project = Project.objects.get(id=code)
-    serializer = ProjectSerializer(project) 
+    ratings=Rating.objects.filter(project=project)
+    serializer = ProjectSerializer(project)
+    output=serializer.data
+    if len(ratings):
+        output['average_rating']=sum(r.rating for r in ratings)/len(ratings) 
+        output['total_ratings_count']=len(ratings)
+    else:
+        output['average_rating']=0
+        output['total_ratings_count']=0
+    return Response(output)    
+
+
+@api_view(['GET'])
+def get_project_comments(request,id):
+    project = Project.objects.get(id=id)
+    comments=Comment.objects.filter(project=project)
+    serializer = ProjectCommentSerializer(comments,many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
