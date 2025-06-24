@@ -6,79 +6,58 @@ function App() {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div className="container-fluid">
-          <a className="navbar-brand" href="#">
-            Crowd_Fund
+          <a className="navbar-brand fw-bold" href="/">
+            <i className="bi bi-lightning-charge-fill me-2 text-warning" />
+            CrowdFund
           </a>
           <button
             className="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
-            data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
             aria-expanded="false"
             aria-label="Toggle navigation"
           >
             <span className="navbar-toggler-icon" />
           </button>
-          <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <div className="collapse navbar-collapse" id="navbarNav">
+            {/* Left section */}
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <a className="nav-link" href="/projects/all">
-                  projects
+                  <i className="bi bi-grid me-1" /> Projects
                 </a>
-              </li>
-              {/* <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Dropdown
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Action
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Another action
-                    </a>
-                  </li>
-                  <li>
-                    <hr className="dropdown-divider" />
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      Something else here
-                    </a>
-                  </li>
-                </ul>
               </li> */}
-              <li className="nav-item d-flex">
-                <a className="nav-link" href="/login">
-                  login/Register
+              <li className="nav-item">
+                <a className="nav-link" href="/search">
+                  <i className="bi bi-search me-1" /> Search
                 </a>
               </li>
-
               <li className="nav-item">
-                <a className="nav-link" href="/profile">
-                  profile
+                <a className="nav-link" href="/create-project">
+                  <i className="bi bi-plus-square me-1" /> Add Project
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link" href="/donate">
-                  Donate
+                  <i className="bi bi-cash-coin me-1" /> Donate
+                </a>
+              </li>
+            </ul>
+
+            {/* Right section */}
+            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+              <li className="nav-item">
+                <a className="nav-link" href="/login">
+                  <i className="bi bi-box-arrow-in-right me-1" /> Login/Register
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="/profile">
+                  <i className="bi bi-person-circle me-1" /> Profile
                 </a>
               </li>
             </ul>

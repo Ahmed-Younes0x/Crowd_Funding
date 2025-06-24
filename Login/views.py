@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, render
 
+from Login.email_verf import send_verification_email
 from Login.serializers import CustomUserSerializer
 from .models import Custom_User
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
@@ -7,20 +8,26 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 @api_view(["POST"])
 @csrf_exempt
 def verf(request):
-    email=request.POST['email']
-    token=request.POST['token']
+    email=request.data['email']
+    token=request.data['token']
     user=Custom_User.objects.get(email=email)
+    if user.token_expiry_date < timezone.now():
+        newtoken=send_verification_email(email)
+        user.refresh_token(newtoken)
+        user.save()
+        return Response(data='token expired another was sent',status=404)
     if user.is_active:
-            return Response(data=request.POST['email'],status=403)
+            return Response(data=request.data['email'],status=403)
     if user.token==token:
         user.is_active=True
         user.save()
-        return Response(data=request.POST['email'],status=200)
+        return Response(data=request.data['email'],status=200)
     
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, BasicAuthentication])

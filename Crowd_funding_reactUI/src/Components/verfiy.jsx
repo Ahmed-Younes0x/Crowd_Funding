@@ -1,5 +1,4 @@
 import { useState } from "react";
-import React from "react";
 import axios from "axios";
 
 export default function Verfiy() {
@@ -14,6 +13,7 @@ export default function Verfiy() {
         },
       }
     );
+    navigate("/");
   };
   return (
     <div className="container-fluid">

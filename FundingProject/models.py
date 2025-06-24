@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.urls import reverse
 from Login.models import Custom_User
 
+# member 3 start
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True, null=True)
@@ -51,22 +52,6 @@ class Project(models.Model):
         if self.end_date > date.today():
             return (self.end_date - date.today()).days
         return 0
-
-    # @property
-    # def average_rating(self):
-    #     ratings = self.ratings.all()
-    #     if ratings:
-    #         return sum(r.rating for r in ratings) / len(ratings)
-    #     return 0
-
-    # @property
-    # def total_ratings_count(self):
-    #     return self.ratings.count()
-
-    # @property
-    # def total_donations_count(self):
-    #     return self.donations.count()
-
 class ProjectImage(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='projects/')
@@ -74,7 +59,7 @@ class ProjectImage(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"صورة {self.project.title}"
+        return f"image {self.project.title}"
 
 class ProjectTag(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -86,7 +71,8 @@ class ProjectTag(models.Model):
 
     def __str__(self):
         return f"#{self.tag}"
-
+# member 3 end
+# 
 class Donation(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE, 
                               related_name='donations')
@@ -96,12 +82,6 @@ class Donation(models.Model):
 
     def __str__(self):
         return f"{self.donor.get_full_name()} - {self.amount} egp"
-
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     self.project.current_amount = self.project.donations.aggregate(
-    #         total=models.Sum('amount'))['total'] or 0
-    #     self.project.save()
 
     @classmethod
     def create(cls, amount, user, project):
@@ -131,7 +111,7 @@ class Donation(models.Model):
         else:
             raise ValueError("Either user or project must be provided")
 
-
+# member 4 start
 class Comment(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     user = models.ForeignKey(Custom_User, on_delete=models.CASCADE)
@@ -151,7 +131,7 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.rating} star"
-
+# member 4 end
 class Report(models.Model):
     TARGET_CHOICES = [
         ('project', 'project'),

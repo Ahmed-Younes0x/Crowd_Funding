@@ -1,4 +1,5 @@
-from datetime import timezone
+from django.utils import timezone
+from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser , BaseUserManager , PermissionsMixin ,AbstractUser , User
 
@@ -34,6 +35,7 @@ class Custom_User(AbstractUser,PermissionsMixin):
     phone=models.IntegerField(default=0)
     profile_image=models.ImageField(upload_to='users_images/')
     token=models.CharField(max_length=20,default='',null=True)
+    token_expiry_date=models.DateTimeField(default=timezone.now() + timedelta(days=1))
     is_active=models.BooleanField(default=False)
     is_superuser=models.BooleanField(default=False)
     is_staff=models.BooleanField(default=False)
@@ -52,6 +54,12 @@ class Custom_User(AbstractUser,PermissionsMixin):
     
     def get_full_name(self):
         return super().get_full_name()
+    
+    def refresh_token(self,token):
+        self.token=token
+        self.token_expiry_date = timezone.now() + timedelta(days=1)
+        self.save()
+        return token
     
     def __str__(self):
         return self.email

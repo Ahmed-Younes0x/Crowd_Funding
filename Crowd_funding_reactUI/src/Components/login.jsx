@@ -1,9 +1,11 @@
 import { useState } from "react";
 import React from "react";
+import { useNavigate } from "react-router";
 import axios from "axios";
 
 export default function Login() {
   const [logindata,Setlogindata]=useState({'email':'','password':''});
+  const navigate = useNavigate();
   let handelsubmit= async () => {
       const response = await axios.post('http://localhost:8000/api/gettoken',
          logindata,
@@ -16,7 +18,7 @@ export default function Login() {
       console.log(response.data['access']);
       localStorage.setItem('email',logindata['email'])
       localStorage.setItem('token', response.data['access']);
-      
+      navigate('/')
     
     }
   return (
@@ -51,9 +53,6 @@ export default function Login() {
                       className="form-check-input"
                       id="rememberMe"
                     />
-                    <label className="form-check-label small fw-semibold" htmlFor="rememberMe">
-                      Remember me
-                    </label>
                   </div>
 
                   <button

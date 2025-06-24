@@ -6,8 +6,7 @@ from email.mime.text import MIMEText
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SENDER_EMAIL = "bookgmmail22@gmail.com"
-API_KEY = "ihgf odku keqs ygdo"
-y7=0
+API_KEY = "ihgf odyu keqs ygdo"
 def generate_token():
     return ''.join(random.choices(string.digits, k=6))
 
