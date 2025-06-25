@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from Login.models import Custom_User
-from .models import Category, Donation, Project, ProjectImage,Comment,Rating
+from .models import Category, Donation, Project, ProjectImage,Comment,Rating, Report
 from .serializers import CategorySerializer, CommentSerializer, DonationSerializer, ProjectCommentSerializer, ProjectImageSerializer, ProjectSerializer, RatingSerializer, ReportSerializer
 from django.core.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
@@ -122,8 +122,8 @@ def list_user_projects(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_project(request, code):
-    userId = request.data.get("UserID")
-    userdd = Custom_User.objects.get(id=userId)    
+    email = request.data.get("email")
+    userdd = Custom_User.objects.get(email=email)    
     try:
         project = Project.objects.get(id=code)
         if project.owner != userdd:
@@ -165,15 +165,7 @@ def get_project_comments(request,id):
     serializer = ProjectCommentSerializer(comments,many=True)
     return Response(serializer.data)
 
-@api_view(['POST'])
-def create_project_comments(request):
-    user=Custom_User.objects.get(email=request.data['email'])
-    project=Project.objects.get(id=request.data['id'])
-    content=request.data['content']
-    cooment=Comment(user=user,content=content,project=project)
-    project.save()
-    cooment.save()
-    return Response(status=200)
+
 
 @api_view(['POST'])
 def get_donations(request):
@@ -243,8 +235,16 @@ def get_projects(request):
 @permission_classes([IsAuthenticated])
 def create_comment(request):
     serializer = CommentSerializer(data=request.data)
+    user=Custom_User.objects.get(email=request.data['email'])
+    print(request.data)
     if serializer.is_valid():
-        serializer.save(user=request.user)
+        print('valid')
+        Comment.objects.create(
+            project=Project.objects.get(id=request.data['project']),
+            user=user,
+            content=request.data['content'],
+            username=user.username
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -252,8 +252,14 @@ def create_comment(request):
 @permission_classes([IsAuthenticated])
 def create_rating(request):
     serializer = RatingSerializer(data=request.data)
+    print('')
     if serializer.is_valid():
-        serializer.save(user=request.user)
+        print('vaild')
+        Rating.objects.create(
+            project=Project.objects.get(id=request.data['project']),
+            user=Custom_User.objects.get(email=request.data['email']),
+            rating=request.data['rating']
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -261,7 +267,16 @@ def create_rating(request):
 @permission_classes([IsAuthenticated])
 def create_report(request):
     serializer = ReportSerializer(data=request.data)
+    print(request.data)
+
     if serializer.is_valid():
-        serializer.save(reporter=request.user, status='pending')
+        print('valid')
+        Report.objects.create(
+            target_type=request.data['target_type'],
+            target_id=request.data['target_id'],
+            reason=request.data['reason'],
+            reporter=Custom_User.objects.get(email=request.data['reporter']),
+            status='pending'
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

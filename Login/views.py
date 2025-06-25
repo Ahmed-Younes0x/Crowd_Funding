@@ -58,11 +58,15 @@ def getuser_by_email(request):
 
 @api_view(['POST'])
 def update_user(request):
-    user=Custom_User.objects.get(id)
-    fields=request.data['fields']
-    for field in fields:
+    user=Custom_User.objects.get(email=request.data['email'])
+    print('userupd')
+    print(request.data)
+    for field in request.data:
+        if field == 'email':
+            continue
         setattr(user,field,request.data[field])
     user.save()
+    return Response(status=200)
 
 @api_view(['POST'])
 def delete_user(request):

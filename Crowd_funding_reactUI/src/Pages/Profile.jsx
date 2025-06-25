@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Profile = () => {
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState({"email":localStorage.getItem('email')});
   const [projects, setProjects] = useState([]);
   const [donations, setdonations] = useState([]);
   const [editing, setEditing] = useState(false);
@@ -78,12 +78,17 @@ const Profile = () => {
   };
 
   const handleUpdate = async () => {
-    await axios.put("/api/user/update", profile, {
+    await axios.post(`http://localhost:8000/api/user/update`, profile, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
     setEditing(false);
   };
-
+  const handleUpdateProject = async (id) => {
+    await axios.post(`http://localhost:8000/api/projects/update/${id}/`, profile, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+    setEditing(false);
+  };
   return (
     <div className="container py-4">
       <h1 className="mb-4">My Profile</h1>
@@ -120,16 +125,6 @@ const Profile = () => {
                     </div>
                   </div>
                   <div className="col-md-6">
-                    <div className="mb-3">
-                      <label className="form-label">Country</label>
-                      <input
-                        className="form-control"
-                        value={profile.country}
-                        onChange={(e) =>
-                          setProfile({ ...profile, country: e.target.value })
-                        }
-                      />
-                    </div>
                     <div className="mb-3">
                       <label className="form-label">Phone</label>
                       <input
@@ -169,9 +164,6 @@ const Profile = () => {
                       <p>
                         <strong>Birthdate:</strong> {profile.birthdate || "N/A"}
                       </p>
-                      <p>
-                        <strong>Country:</strong> {profile.country || "N/A"}
-                      </p>
                     </div>
                   </div>
                   <button
@@ -198,7 +190,7 @@ const Profile = () => {
                   objectFit: "cover",
                 }}
               />
-              {editing && (
+              {/* {editing && (
                 <div className="mt-3">
                   <input
                     type="file"
@@ -207,7 +199,7 @@ const Profile = () => {
                     accept="image/*"
                   />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -225,6 +217,7 @@ const Profile = () => {
                   <th>Current Amount</th>
                   <th>Total Target</th>
                   <th>Progress</th>
+                  <th>Edit</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -251,6 +244,14 @@ const Profile = () => {
                           %
                         </div>
                       </div>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-sm btn-outline-warning"
+                        onClick={() => navigate(`/project/update/${p.id}`)}
+                      >
+                        Edit
+                      </button>
                     </td>
                     <td>
                       <button

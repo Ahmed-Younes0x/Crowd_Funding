@@ -129,6 +129,9 @@ class Rating(models.Model):
     rating = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ['project', 'user']
+
     def __str__(self):
         return f"{self.user.get_full_name()} - {self.rating} star"
 # member 4 end

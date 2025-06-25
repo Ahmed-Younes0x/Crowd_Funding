@@ -38,13 +38,17 @@ export default function ProjectDetailPage() {
   const handleDonation = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8000/api/donations/create", {
-        email: localStorage.getItem("email"),
-        amount,
-        id,
-      },{
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
+      await axios.post(
+        "http://localhost:8000/api/donations/create",
+        {
+          email: localStorage.getItem("email"),
+          amount,
+          id,
+        },
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 2000);
       setAmount("");
@@ -59,15 +63,18 @@ export default function ProjectDetailPage() {
       await axios.post(
         "http://localhost:8000/api/comments/create",
         {
-          project_id: id,
+          project: id,
           content: commentText,
+          email: localStorage.getItem("email"),
         },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
       setCommentText("");
-      const res = await axios.get(`http://localhost:8000/api/projects/${id}/comments`);
+      const res = await axios.get(
+        `http://localhost:8000/api/projects/${id}/comments`
+      );
       setComments(res.data);
     } catch (err) {
       console.error("Failed to post comment", err);
@@ -80,8 +87,9 @@ export default function ProjectDetailPage() {
       await axios.post(
         "http://localhost:8000/api/ratings/create",
         {
-          project_id: id,
+          project: id,
           rating: ratingValue,
+          email: localStorage.getItem("email"),
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -102,6 +110,7 @@ export default function ProjectDetailPage() {
           target_id: targetId,
           target_type: targetType,
           reason: reportReason,
+          reporter: localStorage.getItem("email"),
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -116,19 +125,24 @@ export default function ProjectDetailPage() {
 
   if (!project) return <div className="container mt-5">Loading...</div>;
 
-  const progress = Math.min((project.current_amount / project.total_target) * 100, 100).toFixed(2);
+  const progress = Math.min(
+    (project.current_amount / project.total_target) * 100,
+    100
+  ).toFixed(2);
 
   return (
     <div className="container mt-5">
       <h2>{project.title}</h2>
 
-      {/* Image Carousel */}
       <div className="mb-4">
         {images.length > 0 ? (
           <div id="carousel" className="carousel slide" data-bs-ride="carousel">
             <div className="carousel-inner rounded shadow">
               {images.map((img, index) => (
-                <div key={img.id} className={`carousel-item ${index === 0 ? "active" : ""}`}>
+                <div
+                  key={img.id}
+                  className={`carousel-item ${index === 0 ? "active" : ""}`}
+                >
                   <img
                     src={img.image}
                     alt={`Project ${index}`}
@@ -140,17 +154,31 @@ export default function ProjectDetailPage() {
             </div>
             {images.length > 1 && (
               <>
-                <button className="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                <button
+                  className="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#carousel"
+                  data-bs-slide="prev"
+                >
                   <span className="carousel-control-prev-icon"></span>
                 </button>
-                <button className="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                <button
+                  className="carousel-control-next"
+                  type="button"
+                  data-bs-target="#carousel"
+                  data-bs-slide="next"
+                >
                   <span className="carousel-control-next-icon"></span>
                 </button>
               </>
             )}
           </div>
         ) : (
-          <img src="/default_project.jpg" alt={project.title} className="img-fluid rounded shadow" />
+          <img
+            src="/default_project.jpg"
+            alt={project.title}
+            className="img-fluid rounded shadow"
+          />
         )}
       </div>
 
@@ -159,16 +187,30 @@ export default function ProjectDetailPage() {
       {/* Progress */}
       <div className="mb-4">
         <h5>Progress</h5>
-        <ProgressBar now={progress} label={`${progress}%`} striped variant="success" />
-        <p>${project.current_amount} raised of ${project.total_target}</p>
+        <ProgressBar
+          now={progress}
+          label={`${progress}%`}
+          striped
+          variant="success"
+        />
+        <p>
+          ${project.current_amount} raised of ${project.total_target}
+        </p>
       </div>
 
       {/* Rating */}
       <div className="mb-4">
         <h5>Rating</h5>
-        <p>⭐ {project.average_rating?.toFixed(1) || "0.0"} / 5 from {project.total_ratings_count} ratings</p>
+        <p>
+          ⭐ {project.average_rating?.toFixed(1) || "0.0"} / 5 from{" "}
+          {project.total_ratings_count} ratings
+        </p>
         <div>
-          <select value={ratingValue} onChange={(e) => setRatingValue(e.target.value)} className="form-select w-auto d-inline-block me-2">
+          <select
+            value={ratingValue}
+            onChange={(e) => setRatingValue(e.target.value)}
+            className="form-select w-auto d-inline-block me-2"
+          >
             <option value="">Rate</option>
             {[1, 2, 3, 4, 5].map((v) => (
               <option key={v} value={v}>
@@ -176,7 +218,10 @@ export default function ProjectDetailPage() {
               </option>
             ))}
           </select>
-          <button onClick={handleRatingSubmit} className="btn btn-outline-primary btn-sm">
+          <button
+            onClick={handleRatingSubmit}
+            className="btn btn-outline-primary btn-sm"
+          >
             Submit Rating
           </button>
         </div>
@@ -199,7 +244,10 @@ export default function ProjectDetailPage() {
         </div>
         <ul className="list-group">
           {comments.map((c) => (
-            <li className="list-group-item d-flex justify-content-between" key={c.id}>
+            <li
+              className="list-group-item d-flex justify-content-between"
+              key={c.id}
+            >
               <div>
                 <strong>{c.user}:</strong> {c.content}
               </div>
@@ -225,7 +273,10 @@ export default function ProjectDetailPage() {
           onChange={(e) => setReportReason(e.target.value)}
           placeholder="Reason for report"
         ></textarea>
-        <button onClick={() => handleReport(id, "project")} className="btn btn-warning">
+        <button
+          onClick={() => handleReport(id, "project")}
+          className="btn btn-warning"
+        >
           Report Project
         </button>
       </div>
@@ -248,7 +299,9 @@ export default function ProjectDetailPage() {
           </button>
         </form>
         {showSuccess && (
-          <div className="alert alert-success mt-3">Thank you! Your donation was successful.</div>
+          <div className="alert alert-success mt-3">
+            Thank you! Your donation was successful.
+          </div>
         )}
       </div>
     </div>

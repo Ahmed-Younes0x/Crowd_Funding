@@ -60,6 +60,13 @@ function App() {
                   <i className="bi bi-person-circle me-1" /> Profile
                 </a>
               </li>
+              {localStorage.getItem("admin") == true && (
+                <li className="nav-item">
+                  <a className="nav-link" href="/admin">
+                    <i className="bi bi-person-circle me-1" /> admin
+                  </a>
+                </li>
+              )}
             </ul>
           </div>
         </div>

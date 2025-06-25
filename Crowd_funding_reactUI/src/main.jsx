@@ -16,6 +16,7 @@ import DonationPage from "./Pages/Donation.jsx";
 import ProjectDetailPage from "./Pages/Project.jsx";
 import AllProjects from "./Pages/AllProjects.jsx";
 import SearchProject from "./Pages/Search.jsx";
+import EditProjectPage from "./Pages/updateptoject.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -32,7 +33,7 @@ createRoot(document.getElementById("root")).render(
             <Route path="/create-project" element={<CreateProject />} />
             <Route path="/donate" element={<DonationPage />} />
             <Route path="/project/:id" element={<ProjectDetailPage />} />
-            {/* <Route path="/projects/all" element={<AllProjects />} /> */}
+            <Route path="/project/update/:code" element={<EditProjectPage />} />
           </Routes>
         </div>
       </AuthProvider>

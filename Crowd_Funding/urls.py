@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import path,include
 
 from FundingProject.views import create_comment, create_donation, create_rating, create_report, get_categories, get_donations, get_project_comments, get_project_images, get_projects, list_user_projects, create_project, get_project, update_project, delete_project, search_projects_by_date
-from Login.views import delete_user, getuser, getuser_by_email
+from Login.views import delete_user, getuser, getuser_by_email, update_user
 
 
 urlpatterns = [
@@ -28,6 +28,7 @@ urlpatterns = [
     path('api/user/<int:code>', getuser, name='getuser'),
     path('api/user/delete', delete_user, name='delete_user'),
     path('api/users', getuser_by_email, name='getuser_email'),
+    path('api/user/update', update_user, name='delete_user'),
     path('api/categories/', get_categories, name='categories'),
     path('api/projects/', get_projects, name='get_projects'),
     path('api/images/<int:projectID>', get_project_images, name='get_project_image'),
