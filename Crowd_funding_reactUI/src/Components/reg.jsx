@@ -12,31 +12,33 @@ function Register() {
     const newFields = [...fields];
     newFields[id] = char;
     setFields(newFields);
-    validate(id);
+    
+    // Pass the new value to validate instead of relying on state
+    validate(id, newFields);
   };
 
-  const validate = (id) => {
+  const validate = (id, currentFields = fields) => {
     const newValid = [...valid];
     const newFieldState = [...fieldstate];
 
     switch (id) {
       case 0:
-        newValid[id] = fields[id].trim() !== "";
+        newValid[id] = currentFields[id].trim() !== "";
         break;
       case 1:
-        newValid[id] = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields[id]);
+        newValid[id] = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(currentFields[id]);
         break;
       case 2:
-        newValid[id] = /^\S+$/.test(fields[id]);
+        newValid[id] = /^\S+$/.test(currentFields[id]);
         break;
       case 3:
-        newValid[id] = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@%$#*])[A-Za-z\d@%$#*]{8,}$/.test(fields[id]);
+        newValid[id] = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@%$#*])[A-Za-z\d@%$#*]{8,}$/.test(currentFields[id]);
         break;
       case 4:
-        newValid[id] = fields[id] === fields[3];
+        newValid[id] = currentFields[id] === currentFields[3];
         break;
       case 5:
-        newValid[id] = /^01[0-2,5][0-9]{8}$/.test(fields[id]);
+        newValid[id] = /^01[0-2,5][0-9]{8}$/.test(currentFields[id]);
         break;
       default:
         break;

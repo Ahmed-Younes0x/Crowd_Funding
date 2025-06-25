@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function Verfiy() {
+  const navigate = useNavigate();
   const [logindata, Setlogindata] = useState({ email: "", token: "" });
   let handelsubmit = async () => {
     const response = await axios.post(
